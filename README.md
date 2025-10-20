@@ -64,7 +64,7 @@ Traced internal file access patterns to identify the origin point of a sensitive
 
 ![Investigation Question](lab-challenge-question.png)
 
-*Challenge: Which application layer protocol was used internally within the CORP network to access 'Super_important_file_of_secrets.docx'?*
+*Challenge 4.3.9: Which application layer protocol was used internally within the CORP network to access 'Super_important_file_of_secrets.docx'?*
 
 ## Scenario
 
@@ -74,33 +74,21 @@ File "Super_important_file_of_secrets.docx" was discovered on an external FTP se
 
 - **Elastic SIEM** - Log analysis and dashboard visualization
 - **Zeek** - Network protocol monitoring and file tracking
-- **Query Language** - KQL for targeted file investigation
+- **KQL (Kibana Query Language)** - Targeted file search queries
 
 ## Investigation Process
 
-### 1. Access Zeek Files Dashboard
+### 1. Search Zeek-FILES Dashboard
 
-![Zeek Files Dashboard](zeek-files-dashboard.png)
+![Zeek FILES Dashboard with Query](file-search-query.png)
 
-*Opened Zeek-FILES Dashboard in Elastic SIEM to begin file tracking investigation*
+*Opened Zeek-FILES-Dashboard in Elastic and executed KQL query: `file.name : "Super_important_file_of_secrets.docx"` to filter logs specifically for the target file*
 
-### 2. Execute File Search Query
+### 2. Analyze Top Application Protocols
 
-![File Search Query](file-search-query.png)
+![Top Application Protocols - SMB Result](smb-protocol-confirmation.png)
 
-*Executed KQL query: `file.name : "Super_important_file_of_secrets.docx"` to filter for target file*
-
-### 3. Analyze Top Application Protocols
-
-![Top Protocols Panel](top-protocols-panel.png)
-
-*Reviewed Top Application Protocols panel to identify which protocol was used to access the file internally*
-
-### 4. Confirm Protocol Identification
-
-![SMB Protocol Confirmation](smb-protocol-confirmation.png)
-
-*Validated finding: SMB (Server Message Block) was the protocol used for internal file access*
+*Reviewed Top Application Protocols panel which revealed SMB as the internal protocol used to access the file within the CORP network*
 
 ## Key Findings
 
@@ -108,8 +96,8 @@ File "Super_important_file_of_secrets.docx" was discovered on an external FTP se
 - **Port:** 445 (standard SMB port)
 - **Access Location:** Internal CORP network (172.16.100.x subnet)
 - **File Accessed:** Super_important_file_of_secrets.docx
-- **Significance:** Internal file access preceded external FTP exfiltration
-- **Attack Pattern:** SMB access → File discovery → External exfiltration
+- **Significance:** Internal SMB file access preceded external FTP exfiltration
+- **Attack Pattern:** Internal reconnaissance via SMB → File discovery → External data theft
 
 ## MITRE ATT&CK Mapping
 
@@ -120,10 +108,10 @@ File "Super_important_file_of_secrets.docx" was discovered on an external FTP se
 
 ## Skills Demonstrated
 
-- **Elastic SIEM Navigation** - Dashboard usage and log filtering
-- **KQL Query Development** - Targeted file search queries
+- **Elastic SIEM Navigation** - Dashboard usage and KQL filtering
+- **KQL Query Development** - Precise file tracking queries
 - **SMB Protocol Analysis** - Understanding enterprise file-sharing protocols
-- **File Tracking** - Tracing document access across network segments
+- **File Forensics** - Tracing document access across network segments
 - **Multi-Stage Investigation** - Connecting internal access to external exfiltration
 - **Attack Chain Reconstruction** - Understanding lateral movement techniques
 
@@ -131,32 +119,33 @@ File "Super_important_file_of_secrets.docx" was discovered on an external FTP se
 
 **SMB (Server Message Block):**
 - Application-layer protocol for file sharing over networks
-- Commonly used in Windows environments for shared drives
+- Commonly used in Windows environments for shared drives and lateral movement
 - Port 445 (TCP)
-- Critical protocol for lateral movement detection in enterprise SOCs
+- Critical protocol for detecting insider threats and lateral movement in enterprise SOCs
 
 **Investigation Methodology:**
-1. Opened Zeek-FILES Dashboard in Elastic SIEM
-2. Searched file activity logs using exact filename query
-3. Analyzed Top Application Protocols panel to determine access method
-4. Confirmed SMB as the internal access protocol
-5. Correlated with network topology to validate internal vs external access
+1. Identified target file on external FTP server (from related investigation)
+2. Opened Zeek-FILES Dashboard in Elastic SIEM
+3. Executed KQL query to filter for specific filename
+4. Analyzed Top Application Protocols panel to determine internal access method
+5. Confirmed SMB as the protocol used within CORP network
+6. Correlated internal SMB access with subsequent external FTP exfiltration
 
 ## Conclusions
 
 Successfully identified SMB as the internal protocol used to access sensitive file before exfiltration. This investigation demonstrates:
 
-- Understanding of enterprise file-sharing protocols
-- Ability to track file access across network segments  
-- Recognition of lateral movement indicators
-- Skill in correlating internal reconnaissance with external data theft
-- Proficiency with Elastic SIEM and Zeek for file forensics
+- Understanding of enterprise file-sharing protocols and their role in attacks
+- Ability to track file access across network segments
+- Recognition of lateral movement and reconnaissance indicators
+- Skill in correlating internal activity with external data theft
+- Proficiency with Elastic SIEM, Zeek, and KQL for file forensics
 
-**Attack Chain:** Internal SMB Access → File Discovery → External FTP Exfiltration
+**Complete Attack Chain:** Internal SMB Access → File Discovery → External FTP Exfiltration
 
 ## Related Investigations
 
-This project connects with my [FTP Data Exfiltration Investigation](https://github.com/paigealfred/ftp-exfiltration-investigation) where the same file was transferred externally via FTP after initial SMB access.
+This project directly connects with my [FTP Data Exfiltration Investigation](https://github.com/paigealfred/ftp-exfiltration-investigation) where the same file was transferred externally via FTP to 85.93.20.10 after initial SMB access on the internal network.
 
 ---
 
