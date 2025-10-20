@@ -60,6 +60,12 @@ Successfully identified SMB as the internal protocol used to access the sensitiv
 
 Traced internal file access patterns to identify the origin point of a sensitive document before external exfiltration. Demonstrated ability to track lateral movement and file access within enterprise networks using SMB protocol analysis.
 
+## Lab Challenge
+
+![Investigation Question](lab-challenge-question.png)
+
+*Challenge: Which application layer protocol was used internally within the CORP network to access 'Super_important_file_of_secrets.docx'?*
+
 ## Scenario
 
 File "Super_important_file_of_secrets.docx" was discovered on an external FTP server. Investigation required identifying which internal protocol was used to access this file within the CORP network before exfiltration occurred.
@@ -72,25 +78,29 @@ File "Super_important_file_of_secrets.docx" was discovered on an external FTP se
 
 ## Investigation Process
 
-### 1. Initial Dashboard Access
+### 1. Access Zeek Files Dashboard
+
 ![Zeek Files Dashboard](zeek-files-dashboard.png)
-*Accessed Zeek-FILES Dashboard in Elastic SIEM for file tracking analysis*
 
-### 2. File Search Query
+*Opened Zeek-FILES Dashboard in Elastic SIEM to begin file tracking investigation*
+
+### 2. Execute File Search Query
+
 ![File Search Query](file-search-query.png)
-*Executed KQL query: `file.name : "Super_important_file_of_secrets.docx"` to isolate target file*
 
-### 3. Protocol Identification
-![SMB Protocol Detection](smb-protocol-identification.png)
-*Top Application Protocols panel revealed SMB as the internal access protocol*
+*Executed KQL query: `file.name : "Super_important_file_of_secrets.docx"` to filter for target file*
 
-### 4. Protocol Analysis
-![Protocol Details](protocol-details-panel.png)
-*Detailed analysis confirmed SMB (Server Message Block) usage for internal file access*
+### 3. Analyze Top Application Protocols
 
-### 5. Investigation Results
-![Final Findings](investigation-results.png)
-*Validated SMB protocol usage within CORP network before external exfiltration*
+![Top Protocols Panel](top-protocols-panel.png)
+
+*Reviewed Top Application Protocols panel to identify which protocol was used to access the file internally*
+
+### 4. Confirm Protocol Identification
+
+![SMB Protocol Confirmation](smb-protocol-confirmation.png)
+
+*Validated finding: SMB (Server Message Block) was the protocol used for internal file access*
 
 ## Key Findings
 
@@ -99,7 +109,7 @@ File "Super_important_file_of_secrets.docx" was discovered on an external FTP se
 - **Access Location:** Internal CORP network (172.16.100.x subnet)
 - **File Accessed:** Super_important_file_of_secrets.docx
 - **Significance:** Internal file access preceded external FTP exfiltration
-- **Attack Pattern:** Lateral movement → File discovery → Exfiltration
+- **Attack Pattern:** SMB access → File discovery → External exfiltration
 
 ## MITRE ATT&CK Mapping
 
@@ -126,10 +136,11 @@ File "Super_important_file_of_secrets.docx" was discovered on an external FTP se
 - Critical protocol for lateral movement detection in enterprise SOCs
 
 **Investigation Methodology:**
-1. Searched file activity logs using exact filename
-2. Analyzed protocol field to determine access method
-3. Correlated with network topology to confirm internal vs external access
-4. Validated findings through dashboard visualization
+1. Opened Zeek-FILES Dashboard in Elastic SIEM
+2. Searched file activity logs using exact filename query
+3. Analyzed Top Application Protocols panel to determine access method
+4. Confirmed SMB as the internal access protocol
+5. Correlated with network topology to validate internal vs external access
 
 ## Conclusions
 
@@ -141,11 +152,11 @@ Successfully identified SMB as the internal protocol used to access sensitive fi
 - Skill in correlating internal reconnaissance with external data theft
 - Proficiency with Elastic SIEM and Zeek for file forensics
 
-This analysis shows the complete attack chain: **Internal SMB Access → File Discovery → External FTP Exfiltration**
+**Attack Chain:** Internal SMB Access → File Discovery → External FTP Exfiltration
 
 ## Related Investigations
 
-This project connects with [FTP Data Exfiltration Investigation](../ftp-exfiltration-investigation) where the same file was transferred externally via FTP after initial SMB access.
+This project connects with my [FTP Data Exfiltration Investigation](https://github.com/paigealfred/ftp-exfiltration-investigation) where the same file was transferred externally via FTP after initial SMB access.
 
 ---
 
